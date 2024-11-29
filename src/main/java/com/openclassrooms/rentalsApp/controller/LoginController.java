@@ -23,31 +23,28 @@ public class LoginController {
 
     private UserService userService;
 
-    private UserDetailsService userDetailsService;
-
-    private Authentication authentication;
 
 
-    public LoginController(JWTService jwtService, UserService userService, UserDetailsService userDetailsService) {
+
+    public LoginController(JWTService jwtService, UserService userService) {
         this.jwtService = jwtService;
         this.userService = userService;
-        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/login")
-    public String getToken(Authentication authentication) {
-        String token = jwtService.generateToken(authentication, "");
+    public String getToken() {
+        String token = jwtService.generateToken( "");
         return token;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest registerRequest, Authentication authentication) {
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest registerRequest) {
         // Vérifier si l'utilisateur existe déjà
         if (userService.saveUser(registerRequest) == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "User already exists"));
         }
 
-        String token = jwtService.generateToken(authentication, registerRequest.getEmail());
+        String token = jwtService.generateToken(registerRequest.getEmail());
 
         // Retourner le token JWT dans la réponse
         return ResponseEntity.ok(Map.of("token", token));
