@@ -1,6 +1,7 @@
 package com.openclassrooms.rentalsApp.controller;
 
 import com.openclassrooms.rentalsApp.dtos.RentalRequest;
+import com.openclassrooms.rentalsApp.dtos.RentalRequestTest;
 import com.openclassrooms.rentalsApp.models.Rental;
 import com.openclassrooms.rentalsApp.services.RentalService;
 import jakarta.validation.Valid;
@@ -64,12 +65,12 @@ public class RentalController {
 
     // put rental
     @PutMapping("/{id}")
-    public ResponseEntity<Rental> updateRental(@PathVariable Long id, @Valid @RequestBody RentalRequest rental) throws IOException {
+    public ResponseEntity<Map<String, String>> updateRental(@PathVariable Long id, @Valid @ModelAttribute  RentalRequest rental) throws IOException {
         Rental updatedRental = rentalService.updateRental(id, rental);
         if (updatedRental == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(updatedRental);
+        return ResponseEntity.ok(Map.of("message", "Rental updated!"));
     }
 
 

@@ -1,6 +1,8 @@
 package com.openclassrooms.rentalsApp.services;
 
 import com.openclassrooms.rentalsApp.dtos.RentalRequest;
+import com.openclassrooms.rentalsApp.dtos.RentalRequestTest;
+import com.openclassrooms.rentalsApp.dtos.UserDto;
 import com.openclassrooms.rentalsApp.models.Rental;
 import com.openclassrooms.rentalsApp.models.User;
 import com.openclassrooms.rentalsApp.repository.RentalRepository;
@@ -55,7 +57,7 @@ public class RentalService {
 
         String email = jwt.getClaim("email");
         // Récupérer l'utilisateur à partir du service
-        User user = userService.getUserByEmail(email);
+        UserDto user = userService.getUserByEmail(email);
 
         rentalToSave.setOwner_id(user.getId());
 
@@ -84,9 +86,9 @@ public class RentalService {
         rentalToUpdate.setSurface(rental.getSurface());
         rentalToUpdate.setUpdated_at(LocalDate.now());
 
-        String picturePath = FileUploadUtils.saveFile(rental.getPicture());
+        //String picturePath = FileUploadUtils.saveFile(rental.getPicture());
 
-        rentalToUpdate.setPicture(picturePath);
+       // rentalToUpdate.setPicture(picturePath);
 
         return rentalRepository.save(rentalToUpdate);
     }

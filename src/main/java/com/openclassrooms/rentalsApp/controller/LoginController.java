@@ -2,6 +2,7 @@ package com.openclassrooms.rentalsApp.controller;
 
 import com.openclassrooms.rentalsApp.dtos.LoginRequest;
 import com.openclassrooms.rentalsApp.dtos.RegisterRequest;
+import com.openclassrooms.rentalsApp.dtos.UserDto;
 import com.openclassrooms.rentalsApp.models.User;
 import com.openclassrooms.rentalsApp.services.JWTService;
 import com.openclassrooms.rentalsApp.services.UserService;
@@ -55,7 +56,7 @@ public class LoginController {
         return ResponseEntity.ok(Map.of("token", token));
     }
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<UserDto> getCurrentUser() {
         // Récupérer l'objet Authentication depuis le SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -68,7 +69,7 @@ public class LoginController {
 
         String email = jwt.getClaim("email");
         // Récupérer l'utilisateur à partir du service
-        User user = userService.getUserByEmail(email);
+        UserDto user = userService.getUserByEmail(email);
 
         if (user == null) {
             return ResponseEntity.status(404).build(); // Retourner une erreur 404 si l'utilisateur n'est pas trouvé
