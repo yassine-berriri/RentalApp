@@ -18,6 +18,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
     public User saveUser(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {

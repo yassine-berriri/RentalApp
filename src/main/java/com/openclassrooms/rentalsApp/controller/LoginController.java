@@ -1,5 +1,6 @@
 package com.openclassrooms.rentalsApp.controller;
 
+import com.openclassrooms.rentalsApp.dtos.LoginRequest;
 import com.openclassrooms.rentalsApp.dtos.RegisterRequest;
 import com.openclassrooms.rentalsApp.models.User;
 import com.openclassrooms.rentalsApp.services.JWTService;
@@ -32,9 +33,13 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String getToken() {
-        String token = jwtService.generateToken( "");
-        return token;
+    public ResponseEntity<Map<String, String>> getToken(@Valid @RequestBody LoginRequest loginRequest) {
+        if (userService.existsByEmail(loginRequest.getEmail())) {
+            String token = jwtService.generateToken( loginRequest.getEmail());
+            return ResponseEntity.ok(Map.of("token", token));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", "User does not exist"));
+        }
     }
 
     @PostMapping("/register")
@@ -71,4 +76,6 @@ public class LoginController {
 
         return ResponseEntity.ok(user);
     }
+
+
 }

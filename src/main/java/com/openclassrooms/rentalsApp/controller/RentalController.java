@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 
@@ -29,16 +30,7 @@ public class RentalController {
                                                                 @RequestParam("price") Double price,
                                                                 @RequestParam("description") String description,
                                                                 @RequestParam("picture") MultipartFile picture) throws IOException {
-       /*
-        if (rentalService.saveRental(rental)==null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Rental already exists"));
-        }
-        else {
-            rentalService.saveRental(rental);
-            return ResponseEntity.ok(Map.of("message", "Rental created!"));
-        }
 
-        */
         RentalRequest rental = new RentalRequest();
         rental.setName(name);
         rental.setSurface(surface);
@@ -50,9 +42,35 @@ public class RentalController {
             return ResponseEntity.badRequest().body(Map.of("message", "Rental already exists"));
         }
         else {
-
             return ResponseEntity.ok(Map.of("message", "Rental created!"));
         }
 
     }
+
+    @GetMapping()
+    public Map<String, List<Rental>> getRentals() {
+        List<Rental> rentals = rentalService.getRentals();
+        return Map.of("rentals", rentals);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Rental> getRental(@PathVariable Long id) {
+        Rental rental = rentalService.getRental(id);
+        if (rental == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(rental);
+    }
+
+    // put rental
+    @PutMapping("/{id}")
+    public ResponseEntity<Rental> updateRental(@PathVariable Long id, @Valid @RequestBody RentalRequest rental) throws IOException {
+        Rental updatedRental = rentalService.updateRental(id, rental);
+        if (updatedRental == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedRental);
+    }
+
+
 }

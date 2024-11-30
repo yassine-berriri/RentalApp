@@ -1,9 +1,12 @@
 package com.openclassrooms.rentalsApp.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "RENTALS")
@@ -19,16 +22,17 @@ public class Rental {
     private String picture;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+
+    @Column(name = "owner_id", nullable = false)
+    private Long owner_id;
 
     @Column(name = "created_at", updatable = false)
-    private Timestamp createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    private LocalDate created_at;
 
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    private LocalDate updated_at;
 
-    // Getters and setters
 }
 
