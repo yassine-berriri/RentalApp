@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class FileUploadUtils {
@@ -25,7 +27,8 @@ public class FileUploadUtils {
         }
 
         // Générer un nom de fichier unique
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String originalFileName = file.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
 
         // Créer le chemin de destination
         Path filePath = Paths.get(UPLOAD_DIR, fileName);
@@ -36,7 +39,10 @@ public class FileUploadUtils {
         // Sauvegarder le fichier
         Files.write(filePath, file.getBytes());
 
+        // Encodage du nom de fichier pour utilisation dans l'URL
+        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString());
+
         // Retourner le chemin d'accès public
-        return BASE_URL + "/uploads/" + fileName;
+        return BASE_URL + "/uploads/" + encodedFileName;
     }
 }
