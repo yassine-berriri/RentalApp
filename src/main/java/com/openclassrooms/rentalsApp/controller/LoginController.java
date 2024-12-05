@@ -1,6 +1,8 @@
 package com.openclassrooms.rentalsApp.controller;
 
+import com.openclassrooms.rentalsApp.dtos.LoginRequest;
 import com.openclassrooms.rentalsApp.dtos.RegisterRequest;
+import com.openclassrooms.rentalsApp.dtos.UserDto;
 import com.openclassrooms.rentalsApp.models.User;
 import com.openclassrooms.rentalsApp.services.JWTService;
 import com.openclassrooms.rentalsApp.services.UserService;
@@ -23,37 +25,38 @@ public class LoginController {
 
     private UserService userService;
 
-    private UserDetailsService userDetailsService;
-
-    private Authentication authentication;
 
 
-    public LoginController(JWTService jwtService, UserService userService, UserDetailsService userDetailsService) {
+
+    public LoginController(JWTService jwtService, UserService userService) {
         this.jwtService = jwtService;
         this.userService = userService;
-        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/login")
-    public String getToken(Authentication authentication) {
-        String token = jwtService.generateToken(authentication, "");
-        return token;
+    public ResponseEntity<Map<String, String>> getToken(@Valid @RequestBody LoginRequest loginRequest) {
+        if (userService.existsByEmail(loginRequest.getEmail())) {
+            String token = jwtService.generateToken( loginRequest.getEmail());
+            return ResponseEntity.ok(Map.of("token", token));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", "User does not exist"));
+        }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest registerRequest, Authentication authentication) {
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest registerRequest) {
         // Vérifier si l'utilisateur existe déjà
         if (userService.saveUser(registerRequest) == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "User already exists"));
         }
 
-        String token = jwtService.generateToken(authentication, registerRequest.getEmail());
+        String token = jwtService.generateToken(registerRequest.getEmail());
 
         // Retourner le token JWT dans la réponse
         return ResponseEntity.ok(Map.of("token", token));
     }
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<UserDto> getCurrentUser() {
         // Récupérer l'objet Authentication depuis le SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -66,7 +69,7 @@ public class LoginController {
 
         String email = jwt.getClaim("email");
         // Récupérer l'utilisateur à partir du service
-        User user = userService.getUserByEmail(email);
+        UserDto user = userService.getUserByEmail(email);
 
         if (user == null) {
             return ResponseEntity.status(404).build(); // Retourner une erreur 404 si l'utilisateur n'est pas trouvé
@@ -74,4 +77,6 @@ public class LoginController {
 
         return ResponseEntity.ok(user);
     }
+
+
 }

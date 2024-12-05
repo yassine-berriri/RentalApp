@@ -16,10 +16,6 @@ public class RentalsAppApplication {
 	}
 
 
-	@Bean
-	public MultipartConfigElement multipartConfigElement() {
-		MultipartConfigFactory factory = new MultipartConfigFactory();// Taille max pour toute la requête
-		return factory.createMultipartConfig();
-	}
+
 
 }

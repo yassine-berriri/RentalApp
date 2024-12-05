@@ -30,21 +30,20 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
+         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
-                                "/login",
-                                "auth/register",
-                                "/authenticate").permitAll()
+                                "/api/auth/login",
+                                "/api/auth/register", // Corrigé avec le préfixe complet
+                                "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-                .httpBasic(Customizer.withDefaults()).build();
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+        return http.build();
     }
 
     @Bean
@@ -63,11 +62,6 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public UserDetailsService users() {
-        UserDetails user = User.builder().username("user").password(passwordEncoder().encode("password")).roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+
 
 }

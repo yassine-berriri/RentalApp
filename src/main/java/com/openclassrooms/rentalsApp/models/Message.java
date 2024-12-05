@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "MESSAGES")
@@ -13,21 +14,20 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "rental_id")
-    private Rental rental;
+    private Long rental_id;
 
-    @ManyToOne
+
     @JoinColumn(name = "user_id")
-    private User user;
+    private Long user_id;
 
     private String message;
 
     @Column(name = "created_at", updatable = false)
-    private Timestamp createdAt;
+    private LocalDate created_at;
 
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    private LocalDate updated_at;
 
 }
 
