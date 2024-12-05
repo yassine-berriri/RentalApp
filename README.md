@@ -12,9 +12,9 @@ Ce projet représente la partie backend de l'application **RentalsApp**, une pla
 ## **Lancement du projet**
 
 ### **Prérequis**
-- Java 11 ou Java 17
+- Java 11 ou supérieur
 - Maven
-- Node.js et Angular CLI (version 14 ou ultérieure, pour le front-end)
+- Node.js et Angular CLI (version 14 ou ultérieure)
 
 ### **Étapes pour lancer le projet**
 
@@ -40,4 +40,4 @@ La documentation des APIs est accessible via Swagger : http://localhost:9090/swa
 
 2. **Ajouter le token** :
    - Cliquez sur Authorize dans Swagger.
-   - Collez le token reçu précédemment pour accéder aux autres APIs sécurisées.
+   - Collez le token reçu précédemment pour accéder aux autres APIs.
