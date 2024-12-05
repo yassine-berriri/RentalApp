@@ -39,6 +39,7 @@ public class UserService {
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated_at(LocalDate.now());
+        user.setUpdated_at(LocalDate.now());
         return userRepository.save(user);
     }
 

@@ -28,7 +28,8 @@ public class FileUploadUtils {
 
         // Générer un nom de fichier unique
         String originalFileName = file.getOriginalFilename();
-        String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
+        String sanitizedFileName = originalFileName.replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9._-]", "");
+        String fileName = UUID.randomUUID().toString() + "_" + sanitizedFileName;
 
         // Créer le chemin de destination
         Path filePath = Paths.get(UPLOAD_DIR, fileName);
