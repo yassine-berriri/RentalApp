@@ -20,9 +20,23 @@ Ce projet représente la partie backend de l'application **RentalsApp**, une pla
 
 1. **Cloner le dépôt** :
    git clone https://github.com/yassine-berriri/RentalApp.git
-2. **Lancer le backend** :
+2. **Configurer la base de données**:
+   - Installer MySQL Workbench
+   - Créer une connexion:
+        - Ouvrez MySQL Workbench.
+        - Cliquez sur Database > Connect to Database.
+        - Configurez les paramètres suivants :
+              - Hostname : 127.0.0.1
+              - Port : 3306
+              - Username : root
+              - Password : root
+        - Cliquez sur OK pour établir la connexion.
+   - Créer la base de données :
+        - Exécutez la commande suivante pour créer la base de données : CREATE DATABASE rentals_db;
+        - Actualisez la liste des schémas pour vérifier que la base de données rentals_db a été créée.
+4. **Lancer le backend** :
    mvn spring-boot:run
-3. **Lancer le frontend** :
+5. **Lancer le frontend** :
    ng serve --proxy-config src/proxy.config.json
 
 ---
