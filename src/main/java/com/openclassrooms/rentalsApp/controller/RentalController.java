@@ -5,8 +5,10 @@ import com.openclassrooms.rentalsApp.dtos.RentalRequestTest;
 import com.openclassrooms.rentalsApp.models.Rental;
 import com.openclassrooms.rentalsApp.services.RentalService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,11 +68,15 @@ public class RentalController {
     // put rental
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateRental(@PathVariable Long id, @Valid @ModelAttribute  RentalRequest rental) throws IOException {
-        Rental updatedRental = rentalService.updateRental(id, rental);
-        if (updatedRental == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            Rental updatedRental = rentalService.updateRental(id, rental);
+            if (updatedRental == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not authorized or rental not found"));
+            }
+            return ResponseEntity.ok(Map.of("message", "Rental updated!"));
+        } catch (AccessDeniedException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", ex.getMessage()));
         }
-        return ResponseEntity.ok(Map.of("message", "Rental updated!"));
     }
 
 
