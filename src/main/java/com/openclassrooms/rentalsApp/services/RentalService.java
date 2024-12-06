@@ -9,6 +9,7 @@ import com.openclassrooms.rentalsApp.repository.RentalRepository;
 import com.openclassrooms.rentalsApp.tools.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -80,15 +81,30 @@ public class RentalService {
         if (rentalToUpdate == null) {
             return null;
         }
+
+        // Récupérer l'objet Authentication depuis le SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return null; // Retourner une erreur 401 si non authentifié
+        }
+
+        // Extraire les détails de l'utilisateur
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+
+        String email = jwt.getClaim("email");
+        // Récupérer l'utilisateur à partir du service
+        UserDto user = userService.getUserByEmail(email);
+
+        if (!rentalToUpdate.getOwner_id().equals(user.getId()) ) {
+            throw new AccessDeniedException("User is not authorized"); // Lever une exception standard pour retourner 401/403
+        }
+
         rentalToUpdate.setName(rental.getName());
         rentalToUpdate.setPrice(rental.getPrice());
         rentalToUpdate.setDescription(rental.getDescription());
         rentalToUpdate.setSurface(rental.getSurface());
         rentalToUpdate.setUpdated_at(LocalDate.now());
-
-        //String picturePath = FileUploadUtils.saveFile(rental.getPicture());
-
-       // rentalToUpdate.setPicture(picturePath);
 
         return rentalRepository.save(rentalToUpdate);
     }
